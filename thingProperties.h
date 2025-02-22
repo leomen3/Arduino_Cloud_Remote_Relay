@@ -15,9 +15,7 @@ void onS3RelayChange();
 //void onS5RelayChange();
 
 CloudSwitch hA_RPi_Supply_SW;
-//CloudSwitch s2_Relay;
 CloudSwitch s3_Relay;
-//CloudSwitch s5_Relay;
 
 void initProperties(){
 

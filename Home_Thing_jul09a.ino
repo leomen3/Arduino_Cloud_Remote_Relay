@@ -1,14 +1,19 @@
 #include "arduino_secrets.h"
 #include "thingProperties.h"
 
+// Define relay pins for LinkNode R4
+const int RELAY_S2 = 16;  // Relay S2
+const int RELAY_S3 = 14;  // Relay S3
+const int RELAY_S4 = 12;  // Relay S4
+
 int countWiFiNotification = 0;
 
 void setup() {
-  pinMode(12,OUTPUT); 
-  pinMode(14,OUTPUT); 
-  pinMode(16,OUTPUT); 
- // pinMode(13,OUTPUT); 
-
+  
+  // Initialize relay pins as outputs
+  pinMode(RELAY_S2, OUTPUT);
+  pinMode(RELAY_S3, OUTPUT);
+  pinMode(RELAY_S4, OUTPUT); 
 
   // Initialize serial and wait for port to open:
   Serial.begin(9600);
@@ -16,6 +21,27 @@ void setup() {
   delay(1000); 
   Serial.println("OK thus far");
   delay(1000); 
+
+  // Initially set all relays to OFF (relays are typically active LOW)
+  Serial.println("Setting S2/3/4 to Off");
+
+  digitalWrite(RELAY_S2, LOW);
+  digitalWrite(RELAY_S3, LOW);
+  digitalWrite(RELAY_S4, LOW);  
+
+  // Power Up Sequence (Ground -> Primary power rail -> seconday power rail)
+  delay(500);
+  Serial.println("Setting S2 to On");
+  digitalWrite(RELAY_S2, HIGH);  // Turn ON S2
+  // wait half a second for ground to stabilize
+  delay(1000);
+  Serial.println("Setting S3 to On");
+  digitalWrite(RELAY_S3, HIGH);  // Turn ON S3
+  // wait 5 seconds for boot to start. If primary (S3) and Secondary (S4) turn on at the same time, BOOT DOES NOT START
+  delay(5000);
+  Serial.println("Setting S4 to On");
+  digitalWrite(RELAY_S4, HIGH);  // Turn ON S4
+
 
   // Defined in thingProperties.h
   initProperties();
@@ -33,6 +59,7 @@ void setup() {
   setDebugMessageLevel(2);
   ArduinoCloud.printDebugInfo();
   Serial.println("Finish set-up");
+
 
 }
 
@@ -57,7 +84,10 @@ void loop() {
   Since HARPiSupplySW is READ_WRITE variable, onHARPiSupplySWChange() is
   executed every time a new value is received from IoT Cloud.
 */
+
+
 void onHARPiSupplySWChange()  {
+  /*
   // Add your code here to act upon HARPiSupplySW change
 
    if (hA_RPi_Supply_SW == 1){
@@ -75,32 +105,18 @@ void onHARPiSupplySWChange()  {
 
    }
    delay(500);
+   */
 }
-/*
-  Since S2Relay is READ_WRITE variable, onS2RelayChange() is
-  executed every time a new value is received from IoT Cloud.
-*/
-/* //BLOCKING INDEPENDENT S2 CHANGE - IT IS CONNECTED TO THE GROUND OF OUTPUT LOAD
- * void onS2RelayChange()  {
-  // Add your code here to act upon S2Relay change
-   if (s2_Relay == 1){
-   //if SW is ON (HIGH), S2 Relay CONNECTS COM to NO (Normally Open). Otherwise, COM in connect to NC (Normally Connected)
-   digitalWrite(16,HIGH);
-   Serial.println("Relay to NO\n");
-   }
-   else {
-   digitalWrite(16,LOW);
-   Serial.println("Relay to NC\n");
-   }
-   delay(1000);
-}*/
+
+
+
 
 /*
   Since S3Relay is READ_WRITE variable, onS3RelayChange() is
   executed every time a new value is received from IoT Cloud.
 */
 void onS3RelayChange()  {
-  // Add your code here to act upon S3Relay change
+  /*// Add your code here to act upon S3Relay change
    if (s3_Relay == 1){
    //if SW is ON (HIGH), S3 Relay CONNECTS COM to NO (Normally Open). Otherwise, COM in connect to NC (Normally Connected)
    digitalWrite(14,HIGH);
@@ -110,8 +126,9 @@ void onS3RelayChange()  {
    digitalWrite(14,LOW);
    Serial.println("Relay to NC\n");
    }
-   delay(1000);
+   delay(1000);*/
 }
+
 
 
    
